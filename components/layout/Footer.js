@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { BottomNavigation, Text } from 'react-native-paper';
+
 import Map from '../views/Map';
+import Favorites from '../views/Favorites';
+import Profile from '../views/Profile';
 
 export default class Footer extends Component {
   constructor(props) {
@@ -17,14 +20,9 @@ export default class Footer extends Component {
 
   _handleIndexChange = index => this.setState({ index });
 
-  MapRoute = () => (
-    <Map
-      userLocation={this.props.userLocation}
-      onGetLocation={this.props.onGetLocation}
-    />
-  );
-  FavoritesRoute = () => <Text>Favorites</Text>;
-  ProfileRoute = () => <Text>Profile</Text>;
+  MapRoute = () => <Map />;
+  FavoritesRoute = () => <Favorites />;
+  ProfileRoute = () => <Profile />;
 
   _renderScene = BottomNavigation.SceneMap({
     map: this.MapRoute,

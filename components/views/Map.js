@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Button } from 'react-native';
 import MapView from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 
-import FetchLocation from './FetchLocation';
+import customStyle from '../../customStyle';
 
 export default class Map extends Component {
   state = {
@@ -39,7 +39,7 @@ export default class Map extends Component {
   userLocationMarker = () => (
     <MapView.Marker
       coordinate={this.state.userLocation}
-      onPress={() => console.log('Found me!')}
+      onPress={() => console.log('Found me!!!')}
     />
   );
   render() {
@@ -49,10 +49,11 @@ export default class Map extends Component {
           style={styles.map}
           initialRegion={this.state.userLocation}
           region={this.state.userLocation}
+          customMapStyle={customStyle}
         >
           {this.userLocationMarker()}
         </MapView>
-        <FetchLocation onGetLocation={this.getUserLocationHandler} />
+        <Button title="Get Location" onPress={this.getUserLocationHandler} />
       </View>
     );
   }
@@ -61,7 +62,7 @@ export default class Map extends Component {
 const styles = StyleSheet.create({
   mapContainer: {
     width: '100%',
-    height: 200
+    height: '95%'
   },
   map: {
     width: '100%',
