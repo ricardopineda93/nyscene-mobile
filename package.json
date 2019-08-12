@@ -5,7 +5,8 @@
   "scripts": {
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "seed": "node server/database/seed/seed.js"
   },
   "dependencies": {
     "@react-native-community/geolocation": "^1.4.2",
@@ -16,6 +17,7 @@
     "graphql": "^14.4.2",
     "graphql-tools": "^4.0.5",
     "morgan": "^1.9.1",
+    "pg": "^7.12.1",
     "react": "16.8.6",
     "react-native": "0.60.4",
     "react-native-maps": "0.25.0",
