@@ -18,6 +18,9 @@ export default class Map extends Component {
 
   componentDidMount() {
     this.getUserLocationHandler();
+    //Leave this here or pass on to redux?
+    //Will also need to load all movie locations, that will definitely
+    //be in redux..
   }
 
   getUserLocationHandler = () => {
