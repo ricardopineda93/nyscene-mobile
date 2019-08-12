@@ -3,7 +3,7 @@ import { View, StyleSheet, Button } from 'react-native';
 import MapView from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 
-import customStyle from '../../customStyle';
+import customStyle from '../../../customStyle';
 
 export default class Map extends Component {
   state = {
