@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { Movies } = require('../database/index');
+const { Scene } = require('../database/index');
 
 const {
   GraphQLObjectType,
@@ -12,8 +12,8 @@ const {
 
 // Movies Type
 
-const MovieType = new GraphQLObjectType({
-  name: 'Movie',
+const SceneType = new GraphQLObjectType({
+  name: 'Scene',
   fields: () => ({
     id: { type: GraphQLInt },
     film: { type: GraphQLString },
@@ -63,17 +63,17 @@ const OMDBType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: {
-    singleMovie: {
-      type: MovieType,
+    singleScene: {
+      type: SceneType,
       args: { id: { type: GraphQLInt } },
       async resolve(parent, args) {
-        return await Movies.findByPk(args.id);
+        return await Scene.findByPk(args.id);
       }
     },
-    allMovies: {
-      type: new GraphQLList(MovieType),
+    allScenes: {
+      type: new GraphQLList(SceneType),
       async resolve(parent, args) {
-        return await Movies.findAll();
+        return await Scene.findAll();
       }
     },
     omdbInfo: {

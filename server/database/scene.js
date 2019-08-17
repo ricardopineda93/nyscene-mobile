@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const db = require('./db');
 
-const Movies = db.define('movies', {
+const Scene = db.define('scene', {
   film: {
     type: Sequelize.STRING,
     allowNull: false,
@@ -86,4 +86,4 @@ const Movies = db.define('movies', {
   }
 });
 
-module.exports = Movies;
+module.exports = Scene;
