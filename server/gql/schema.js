@@ -1,8 +1,13 @@
+const axios = require('axios');
+const { Movies } = require('../database/index');
+
 const {
   GraphQLObjectType,
   GraphQLFloat,
   GraphQLInt,
-  GraphQLString
+  GraphQLString,
+  GraphQLList,
+  GraphQLSchema
 } = require('graphql');
 
 // Movies Type
@@ -55,25 +60,34 @@ const OMDBType = new GraphQLObjectType({
 });
 
 //Root Query:
+const RootQuery = new GraphQLObjectType({
+  name: 'RootQueryType',
+  fields: {
+    singleMovie: {
+      type: MovieType,
+      args: { id: { type: GraphQLInt } },
+      async resolve(parent, args) {
+        return await Movies.findByPk(args.id);
+      }
+    },
+    allMovies: {
+      type: new GraphQLList(MovieType),
+      async resolve(parent, args) {
+        return await Movies.findAll();
+      }
+    },
+    omdbInfo: {
+      type: OMDBType,
+      args: { imdbID: { type: GraphQLString } },
+      resolve(parent, args) {
+        return axios
+          .get(`http://www.omdbapi.com/?apikey=640dfac7&i=${args.imdbID}`)
+          .then(res => res.data);
+      }
+    }
+  }
+});
 
-// const typeDefinitions = `
-// type Movie {
-// 	id: Int!
-// 	film: String
-// 	lat: Float!
-// 	lng: Float!
-// 	locationDetails: String!
-// 	boro: String!
-// 	neighborhood: String!
-// 	imdbLink: String!
-// 	imdbId: String!
-// }
-// type RootQuery {
-// 	allMovies: [Movie]
-// }
-// schema {
-// 	query: RootQuery
-// }
-// `;
-
-// module.exports = [typeDefinitions];
+module.exports = new GraphQLSchema({
+  query: RootQuery
+});
