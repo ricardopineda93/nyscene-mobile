@@ -4,7 +4,7 @@ import { useQuery } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 
 const Profile = props => {
-  const getQuery = () => {
+  const getAllUsers = () => {
     const { loading, error, data } = useQuery(gql`
       {
         allUsers {
@@ -26,10 +26,11 @@ const Profile = props => {
       </View>
     ));
   };
+
   return (
     <>
       <Text>Profiles: </Text>
-      {getQuery()}
+      {getAllUsers()}
     </>
   );
 };

@@ -10,6 +10,7 @@ import {
 
 import Header from './app/components/layout/Header';
 import Footer from './app/components/layout/Footer';
+// import { Provider as StoreProvider } from 'react-redux';
 
 export default class App extends Component {
   render() {

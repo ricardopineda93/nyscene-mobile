@@ -2,8 +2,22 @@ import React, { Component } from 'react';
 import { View, StyleSheet, Button } from 'react-native';
 import MapView from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
-
+import { useQuery } from '@apollo/react-hooks';
+import { gql } from 'apollo-boost';
 import customStyle from '../../../customStyle';
+
+// return data.allScenes.map(({ id, lat, lng }) => (
+//   <MapView.Marker
+//     key={id}
+//     coordinate={{
+//       latitude: lat,
+//       longitude: lng,
+//       latitudeDelta: 0.0922,
+//       longitudeDelta: 0.0421
+//     }}
+//     onPress={() => console.log('Found me!!!')}
+//   />
+// ));
 
 export default class Map extends Component {
   state = {
