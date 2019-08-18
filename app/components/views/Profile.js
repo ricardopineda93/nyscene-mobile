@@ -1,8 +1,37 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
+import { useQuery } from '@apollo/react-hooks';
+import { gql } from 'apollo-boost';
 
 const Profile = props => {
-  return <Text>Profile</Text>;
+  const getQuery = () => {
+    const { loading, error, data } = useQuery(gql`
+      {
+        allUsers {
+          id
+          email
+          password
+        }
+      }
+    `);
+    if (loading) return <Text>Loading...</Text>;
+    if (error) {
+      console.log(error);
+      return <Text>Error :(</Text>;
+    }
+    return data.allUsers.map(({ id, email }) => (
+      <View key={id}>
+        <Text>Email: {email}</Text>
+        <Text>ID: {id}</Text>
+      </View>
+    ));
+  };
+  return (
+    <>
+      <Text>Profiles: </Text>
+      {getQuery()}
+    </>
+  );
 };
 
 export default Profile;

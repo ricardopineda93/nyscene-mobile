@@ -36,8 +36,7 @@ const UserType = new GraphQLObjectType({
     email: { type: GraphQLString },
     password: { type: GraphQLString },
     salt: { type: GraphQLString },
-    googleId: { type: GraphQLString },
-    boro: { type: GraphQLString }
+    googleId: { type: GraphQLString }
   })
 });
 

@@ -7,6 +7,8 @@ import App from './App';
 import { name as appName } from './app.json';
 // import { Provider as StoreProvider } from 'react-redux';
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
+import { ApolloProvider } from '@apollo/react-hooks';
+import ApolloClient from 'apollo-boost';
 
 const theme = {
   ...DefaultTheme,
@@ -18,11 +20,17 @@ const theme = {
   }
 };
 
+const client = new ApolloClient({
+  uri: 'http://192.168.1.7:8080/graphql'
+});
+
 const Main = () => {
   return (
-    <PaperProvider theme={theme}>
-      <App />
-    </PaperProvider>
+    <ApolloProvider client={client}>
+      <PaperProvider theme={theme}>
+        <App />
+      </PaperProvider>
+    </ApolloProvider>
   );
 };
 
