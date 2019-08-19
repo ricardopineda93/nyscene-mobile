@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { Text, View, ScrollView, Linking } from 'react-native';
+import {
+  Text,
+  View,
+  ScrollView,
+  Linking,
+  TouchableOpacity
+} from 'react-native';
 import { Headline, Card, Title, Paragraph, Button } from 'react-native-paper';
 import { useQuery } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
@@ -32,11 +38,13 @@ const Favorites = props => {
     const { favorites } = data.singleUser;
     return favorites.map(({ scene }) => (
       <View key={scene.id}>
-        <Card onPress={() => Linking.openURL(scene.imdbLink)}>
+        <Card>
           <Card.Content>
-            <Title>
-              {scene.film} ({scene.omdbInfo.Year})
-            </Title>
+            <TouchableOpacity onPress={() => Linking.openURL(scene.imdbLink)}>
+              <Title style={{ textDecorationLine: 'underline' }}>
+                {scene.film} ({scene.omdbInfo.Year})
+              </Title>
+            </TouchableOpacity>
             <Paragraph>{scene.locationDetails}</Paragraph>
           </Card.Content>
           <Card.Cover source={{ uri: scene.omdbInfo.Poster }} />
