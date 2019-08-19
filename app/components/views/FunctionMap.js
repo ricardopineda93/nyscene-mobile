@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Button } from 'react-native';
+import { View, StyleSheet, Button, Text } from 'react-native';
+import { Modal, Portal } from 'react-native-paper';
 import MapView from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import { useQuery } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 import customStyle from '../../../customStyle';
+import SceneInfo from './SceneInfo';
+import { allScenes } from '../../queries/queries';
 const filmstripIcon = require('../../static/filmstrip.png');
 
 const styles = StyleSheet.create({
@@ -27,11 +30,19 @@ const FunctionMap = props => {
     longitudeDelta: 0.0421
   });
 
-  const [sceneLocations, setSceneLocations] = useState(false);
+  const [modalIsVisible, setModalIsVisible] = useState(false);
+  const [currentMapCenter, setCurrentMapCenter] = useState(userLocation);
+  const [selectedSceneId, setSelectedSceneId] = useState(null);
 
   const getUserLocationHandler = () => {
     Geolocation.getCurrentPosition(position => {
       setUserLocation({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
+      });
+      setCurrentMapCenter({
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
         latitudeDelta: 0.0922,
@@ -43,17 +54,19 @@ const FunctionMap = props => {
     });
   };
 
+  const sceneSelectHandler = (id, lat, lng) => {
+    setSelectedSceneId(id);
+    setCurrentMapCenter({
+      latitude: lat,
+      longitude: lng,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421
+    });
+    setModalIsVisible(true);
+  };
+
   const getAllSceneLocationsHandler = () => {
-    const { loading, error, data } = useQuery(gql`
-      {
-        allScenes {
-          id
-          lat
-          lng
-          film
-        }
-      }
-    `);
+    const { loading, error, data } = useQuery(allScenes);
     if (loading) console.log(loading);
     if (error) console.log(error);
     if (data.allScenes) {
@@ -66,7 +79,7 @@ const FunctionMap = props => {
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421
           }}
-          onPress={() => console.log(film)}
+          onPress={() => sceneSelectHandler(id, lat, lng)}
           image={filmstripIcon}
         />
       ));
@@ -86,18 +99,25 @@ const FunctionMap = props => {
   }, []);
 
   return (
-    <View style={styles.mapContainer}>
-      <MapView
-        style={styles.map}
-        initialRegion={userLocation}
-        region={userLocation}
-        customMapStyle={customStyle}
-      >
-        {userLocationMarker()}
-        {getAllSceneLocationsHandler()}
-      </MapView>
-      <Button title="Get Location" onPress={getUserLocationHandler} />
-    </View>
+    <>
+      <SceneInfo
+        visible={modalIsVisible}
+        onDismiss={() => setModalIsVisible(false)}
+        sceneId={selectedSceneId}
+      />
+      <View style={styles.mapContainer}>
+        <MapView
+          style={styles.map}
+          initialRegion={currentMapCenter}
+          region={currentMapCenter}
+          customMapStyle={customStyle}
+        >
+          {userLocationMarker()}
+          {getAllSceneLocationsHandler()}
+        </MapView>
+        <Button title="Get Location" onPress={getUserLocationHandler} />
+      </View>
+    </>
   );
 };
 

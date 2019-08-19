@@ -9,27 +9,13 @@ import {
 import { Headline, Card, Title, Paragraph, Button } from 'react-native-paper';
 import { useQuery } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
+import { userFavorites } from '../../queries/queries';
 
 const Favorites = props => {
   const getUserFavorites = () => {
-    const { loading, error, data } = useQuery(gql`
-      {
-        singleUser(id: 2) {
-          favorites {
-            scene {
-              id
-              film
-              locationDetails
-              imdbLink
-              omdbInfo {
-                Year
-                Poster
-              }
-            }
-          }
-        }
-      }
-    `);
+    const { loading, error, data } = useQuery(userFavorites, {
+      variables: { id: 2 }
+    });
     if (loading) return <Text>Loading...</Text>;
     if (error) {
       console.log(error);

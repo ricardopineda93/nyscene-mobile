@@ -3,20 +3,13 @@ import { Text, View } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import { useQuery } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
+import { allUsers } from '../../queries/queries';
 
 const Profile = props => {
   const [formDetails, setFormDetails] = useState({ email: '', password: '' });
 
   const getAllUsers = () => {
-    const { loading, error, data } = useQuery(gql`
-      {
-        allUsers {
-          id
-          email
-          password
-        }
-      }
-    `);
+    const { loading, error, data } = useQuery(allUsers);
     if (loading) return <Text>Loading...</Text>;
     if (error) {
       console.log(error);
