@@ -54,21 +54,14 @@ const SceneInfo = props => {
               <Paragraph>Neighborhood: {singleScene.neighborhood}</Paragraph>
               <Paragraph>Borough: {singleScene.boro}</Paragraph>
             </Card.Content>
-            {/* <Card.Actions>
-            <Button
-              mode="contained"
-              onPress={() => console.log('Take me there!')}
-            >
-              Visit
-            </Button>
-            <Button
-              mode="contained"
-              color="red"
-              onPress={() => console.log('Get it outta here!')}
-            >
-              Remove
-            </Button>
-          </Card.Actions> */}
+            <Card.Actions>
+              <Button
+                mode="contained"
+                onPress={() => console.log('Added to Favorites!')}
+              >
+                Add to Favorites
+              </Button>
+            </Card.Actions>
           </Card>
         </View>
       );
