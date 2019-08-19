@@ -7,6 +7,7 @@ const {
   GraphQLInt,
   GraphQLString,
   GraphQLList,
+  GraphQLID,
   GraphQLSchema
 } = require('graphql');
 
@@ -15,7 +16,7 @@ const {
 const SceneType = new GraphQLObjectType({
   name: 'Scene',
   fields: () => ({
-    id: { type: GraphQLInt },
+    id: { type: GraphQLID },
     film: { type: GraphQLString },
     lat: { type: GraphQLFloat },
     lng: { type: GraphQLFloat },
@@ -32,11 +33,12 @@ const SceneType = new GraphQLObjectType({
 const UserType = new GraphQLObjectType({
   name: 'User',
   fields: () => ({
-    id: { type: GraphQLInt },
+    id: { type: GraphQLID },
     email: { type: GraphQLString },
     password: { type: GraphQLString },
     salt: { type: GraphQLString },
-    googleId: { type: GraphQLString }
+    googleId: { type: GraphQLString },
+    favorites: { type: FavoriteType }
   })
 });
 
@@ -45,9 +47,11 @@ const UserType = new GraphQLObjectType({
 const FavoriteType = new GraphQLObjectType({
   name: 'Favorite',
   fields: () => ({
-    id: { type: GraphQLInt },
+    id: { type: GraphQLID },
     userId: { type: GraphQLInt },
-    sceneId: { type: GraphQLInt }
+    sceneId: { type: GraphQLInt },
+    scene: { type: SceneType },
+    user: { type: UserType }
   })
 });
 
@@ -73,7 +77,7 @@ const OMDBType = new GraphQLObjectType({
     Metascore: { type: GraphQLString },
     imdbRating: { type: GraphQLString },
     imdbVotes: { type: GraphQLString },
-    imdbID: { type: GraphQLString },
+    imdbID: { type: GraphQLID },
     Type: { type: GraphQLString },
     DVD: { type: GraphQLString },
     BoxOffice: { type: GraphQLString },
@@ -89,7 +93,7 @@ const RootQuery = new GraphQLObjectType({
   fields: {
     singleScene: {
       type: SceneType,
-      args: { id: { type: GraphQLInt } },
+      args: { id: { type: GraphQLID } },
       async resolve(parent, args) {
         return await Scene.findByPk(args.id);
       }
@@ -100,21 +104,35 @@ const RootQuery = new GraphQLObjectType({
         return await Scene.findAll();
       }
     },
+    singleUser: {
+      type: UserType,
+      args: { id: { type: GraphQLID } },
+      async resolve(parent, args) {
+        return await User.findByPk(args.id);
+      }
+    },
     allUsers: {
       type: new GraphQLList(UserType),
       async resolve(parent, args) {
         return await User.findAll();
       }
     },
-    allFavorites: {
+    allUserFavorites: {
       type: new GraphQLList(FavoriteType),
+      args: { userId: { type: GraphQLID } },
       async resolve(parent, args) {
-        return await Favorite.findAll();
+        const userFavorites = await Favorite.findAll({
+          where: {
+            userId: args.userId
+          },
+          include: [{ model: Scene }]
+        });
+        return userFavorites;
       }
     },
     omdbInfo: {
       type: OMDBType,
-      args: { imdbID: { type: GraphQLString } },
+      args: { imdbID: { type: GraphQLID } },
       async resolve(parent, args) {
         const { data } = await axios.get(
           `http://www.omdbapi.com/?apikey=640dfac7&i=${args.imdbID}`
