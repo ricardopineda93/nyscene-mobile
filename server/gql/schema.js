@@ -7,6 +7,7 @@ const {
   GraphQLString,
   GraphQLList,
   GraphQLID,
+  GraphQLNonNull,
   GraphQLSchema
 } = require('graphql');
 
@@ -190,8 +191,8 @@ const Mutation = new GraphQLObjectType({
     addUser: {
       type: UserType,
       args: {
-        email: { type: GraphQLString },
-        password: { type: GraphQLString }
+        email: { type: new GraphQLNonNull(GraphQLString) },
+        password: { type: new GraphQLNonNull(GraphQLString) }
       },
       async resolve(parent, args) {
         const newUser = await User.create({
@@ -204,8 +205,8 @@ const Mutation = new GraphQLObjectType({
     addFavorite: {
       type: FavoriteType,
       args: {
-        sceneId: { type: GraphQLID },
-        userId: { type: GraphQLID }
+        sceneId: { type: new GraphQLNonNull(GraphQLID) },
+        userId: { type: new GraphQLNonNull(GraphQLID) }
       },
       async resolve(parent, args) {
         const newFavorite = await Favorite.create({
@@ -218,14 +219,14 @@ const Mutation = new GraphQLObjectType({
     addScene: {
       type: SceneType,
       args: {
-        film: { type: GraphQLString },
-        lat: { type: GraphQLFloat },
-        lng: { type: GraphQLFloat },
+        film: { type: new GraphQLNonNull(GraphQLString) },
+        lat: { type: new GraphQLNonNull(GraphQLFloat) },
+        lng: { type: new GraphQLNonNull(GraphQLFloat) },
         locationDetails: { type: GraphQLString },
-        boro: { type: GraphQLString },
-        neighborhood: { type: GraphQLString },
-        imdbLink: { type: GraphQLString },
-        imdbId: { type: GraphQLString }
+        boro: { type: new GraphQLNonNull(GraphQLString) },
+        neighborhood: { type: new GraphQLNonNull(GraphQLString) },
+        imdbLink: { type: new GraphQLNonNull(GraphQLString) },
+        imdbId: { type: new GraphQLNonNull(GraphQLString) }
       },
       async resolve(parent, args) {
         const newScene = await Scene.create({
