@@ -1,8 +1,70 @@
-import React from 'react';
-import { Text } from 'react-native';
+import React, { useState } from 'react';
+import { Text, View, ScrollView } from 'react-native';
+import { Headline, Card, Title, Paragraph, Button } from 'react-native-paper';
+import { useQuery } from '@apollo/react-hooks';
+import { gql } from 'apollo-boost';
 
 const Favorites = props => {
-  return <Text>Favorites</Text>;
+  const getUserFavorites = () => {
+    const { loading, error, data } = useQuery(gql`
+      {
+        singleUser(id: 2) {
+          favorites {
+            scene {
+              id
+              film
+              locationDetails
+              omdbInfo {
+                Year
+                Poster
+              }
+            }
+          }
+        }
+      }
+    `);
+    if (loading) return <Text>Loading...</Text>;
+    if (error) {
+      console.log(error);
+      return <Text>Error :(</Text>;
+    }
+    const { favorites } = data.singleUser;
+    return favorites.map(({ scene }) => (
+      <View key={scene.id}>
+        <Card>
+          <Card.Content>
+            <Title>
+              {scene.film} ({scene.omdbInfo.Year})
+            </Title>
+            <Paragraph>{scene.locationDetails}</Paragraph>
+          </Card.Content>
+          <Card.Cover source={{ uri: scene.omdbInfo.Poster }} />
+          <Card.Actions>
+            <Button
+              mode="contained"
+              onPress={() => console.log('Take me there!')}
+            >
+              Visit
+            </Button>
+            <Button
+              mode="contained"
+              color="red"
+              onPress={() => console.log('Get it outta here!')}
+            >
+              Remove
+            </Button>
+          </Card.Actions>
+        </Card>
+      </View>
+    ));
+  };
+
+  return (
+    <>
+      <Headline>Favorites:</Headline>
+      <ScrollView>{getUserFavorites()}</ScrollView>
+    </>
+  );
 };
 
 export default Favorites;

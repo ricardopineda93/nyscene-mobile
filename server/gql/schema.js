@@ -241,6 +241,48 @@ const Mutation = new GraphQLObjectType({
         });
         return newScene;
       }
+    },
+    removeUser: {
+      type: UserType,
+      args: {
+        id: { type: GraphQLID }
+      },
+      async resolve(parent, args) {
+        const removeUser = await User.destroy({
+          where: {
+            id: args.id
+          }
+        });
+        return removeUser;
+      }
+    },
+    removeFavorite: {
+      type: FavoriteType,
+      args: {
+        id: { type: GraphQLID }
+      },
+      async resolve(parent, args) {
+        const removeFavorite = await Favorite.destroy({
+          where: {
+            id: args.id
+          }
+        });
+        return removeFavorite;
+      }
+    },
+    removeScene: {
+      type: SceneType,
+      args: {
+        id: { type: GraphQLID }
+      },
+      async resolve(parent, args) {
+        const removeScene = await Scene.destroy({
+          where: {
+            id: args.id
+          }
+        });
+        return removeScene;
+      }
     }
   }
 });
