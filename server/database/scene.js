@@ -10,20 +10,20 @@ const Scene = db.define('scene', {
     }
   },
   year: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-    validate: {
-      notEmpty: true,
-      min: 1800,
-      max: 2999
-    }
+    type: Sequelize.INTEGER
+    // allowNull: false,
+    // validate: {
+    //   notEmpty: true,
+    //   min: 1800,
+    //   max: 2999
+    // }
   },
   director: {
-    type: Sequelize.STRING,
-    allowNull: false,
-    validate: {
-      notEmpty: true
-    }
+    type: Sequelize.STRING
+    // allowNull: false,
+    // validate: {
+    //   notEmpty: true
+    // }
   },
   lat: {
     type: Sequelize.DECIMAL(9, 6),
@@ -64,7 +64,7 @@ const Scene = db.define('scene', {
   },
   media: {
     type: Sequelize.STRING,
-    allowNull: false,
+    // allowNull: false,
     defaultValue: 'Film'
   },
   imdbLink: {

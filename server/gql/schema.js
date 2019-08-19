@@ -184,6 +184,67 @@ const RootQuery = new GraphQLObjectType({
   }
 });
 
+const Mutation = new GraphQLObjectType({
+  name: 'Mutation',
+  fields: {
+    addUser: {
+      type: UserType,
+      args: {
+        email: { type: GraphQLString },
+        password: { type: GraphQLString }
+      },
+      async resolve(parent, args) {
+        const newUser = await User.create({
+          email: args.email,
+          password: args.password
+        });
+        return newUser;
+      }
+    },
+    addFavorite: {
+      type: FavoriteType,
+      args: {
+        sceneId: { type: GraphQLID },
+        userId: { type: GraphQLID }
+      },
+      async resolve(parent, args) {
+        const newFavorite = await Favorite.create({
+          sceneId: args.sceneId,
+          userId: args.userId
+        });
+        return newFavorite;
+      }
+    },
+    addScene: {
+      type: SceneType,
+      args: {
+        film: { type: GraphQLString },
+        lat: { type: GraphQLFloat },
+        lng: { type: GraphQLFloat },
+        locationDetails: { type: GraphQLString },
+        boro: { type: GraphQLString },
+        neighborhood: { type: GraphQLString },
+        imdbLink: { type: GraphQLString },
+        imdbId: { type: GraphQLString }
+      },
+      async resolve(parent, args) {
+        const newScene = await Scene.create({
+          film: args.film,
+          lat: args.lat,
+          lng: args.lng,
+          locationDetails: args.locationDetails,
+          boro: args.boro,
+          neighborhood: args.neighborhood,
+          imdbLink: args.imdbLink,
+          imdbId: args.imdbId
+        });
+        return newScene;
+      }
+    }
+  }
+});
+
 module.exports = new GraphQLSchema({
-  query: RootQuery
+  query: RootQuery,
+  mutation: Mutation
 });
