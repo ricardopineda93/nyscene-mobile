@@ -1,23 +1,53 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
-  Text,
+  StyleSheet,
   View,
-  ScrollView,
   Linking,
-  TouchableOpacity
+  TouchableOpacity,
+  Text
 } from 'react-native';
-import {
-  Card,
-  Title,
-  Paragraph,
-  Button,
-  Modal,
-  Portal
-} from 'react-native-paper';
+import { Card, Title, Paragraph, Button } from 'react-native-paper';
 import { useQuery } from '@apollo/react-hooks';
 import { getScene } from '../../queries/queries';
 
-const SceneInfo = props => {
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'column',
+    alignSelf: 'flex-start'
+  },
+  bubble: {
+    width: 400,
+    flexDirection: 'row',
+    alignSelf: 'flex-start',
+    backgroundColor: '#FFF',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 6,
+    borderColor: '#FFF',
+    borderWidth: 0.5
+  },
+  amount: {
+    flex: 1
+  },
+  arrow: {
+    backgroundColor: 'transparent',
+    borderWidth: 16,
+    borderColor: 'transparent',
+    borderTopColor: '#FFF',
+    alignSelf: 'center',
+    marginTop: -32
+  },
+  arrowBorder: {
+    backgroundColor: 'transparent',
+    borderWidth: 16,
+    borderColor: 'transparent',
+    borderTopColor: '#FFF',
+    alignSelf: 'center',
+    marginTop: -0.5
+  }
+});
+
+const SceneCallout = props => {
   const getSceneInfo = () => {
     const { sceneId } = props;
 
@@ -68,12 +98,14 @@ const SceneInfo = props => {
   };
 
   return (
-    <Portal>
-      <Modal visible={props.visible} onDismiss={props.onDismiss}>
-        {getSceneInfo()}
-      </Modal>
-    </Portal>
+    <View style={styles.container}>
+      <View style={styles.bubble}>
+        <View style={styles.amount}>{getSceneInfo()}</View>
+      </View>
+      <View style={styles.arrowBorder} />
+      <View style={styles.arrow} />
+    </View>
   );
 };
 
-export default SceneInfo;
+export default SceneCallout;

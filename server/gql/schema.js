@@ -64,8 +64,7 @@ const UserType = new GraphQLObjectType({
         const userFavorites = await Favorite.findAll({
           where: {
             userId: parent.id
-          },
-          include: [{ model: Scene }]
+          }
         });
         return userFavorites;
       }

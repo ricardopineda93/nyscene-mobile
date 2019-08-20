@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Text, View } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import { useQuery } from '@apollo/react-hooks';
-import { gql } from 'apollo-boost';
 import { allUsers } from '../../queries/queries';
 
 const Profile = props => {

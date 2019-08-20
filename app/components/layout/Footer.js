@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { BottomNavigation, Text } from 'react-native-paper';
 
-import FunctionMap from '../views/FunctionMap';
+import Map from '../views/Map';
 import Favorites from '../views/Favorites';
 import Profile from '../views/Profile';
 
@@ -20,7 +20,7 @@ export default class Footer extends Component {
 
   _handleIndexChange = index => this.setState({ index });
 
-  MapRoute = () => <FunctionMap />;
+  MapRoute = () => <Map />;
   FavoritesRoute = () => <Favorites />;
   ProfileRoute = () => <Profile />;
 
