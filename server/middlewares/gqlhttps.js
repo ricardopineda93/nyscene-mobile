@@ -13,7 +13,7 @@ const gqlMiddleware = graphqlHTTP((req, res) => {
         }
       });
     };
-    passport.authenticate('local', { session: true }, (err, user) => {
+    passport.authenticate('local', (err, user) => {
       next(user);
     })(req, res, next);
   });
