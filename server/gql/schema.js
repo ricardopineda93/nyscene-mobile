@@ -201,16 +201,39 @@ const Mutation = new GraphQLObjectType({
         return newUser;
       }
     },
+    loginUser: {
+      type: UserType,
+      args: {
+        email: { type: new GraphQLNonNull(GraphQLString) },
+        password: { type: new GraphQLNonNull(GraphQLString) }
+      },
+      async resolve(parent, args, context) {
+        const user = await User.findOne({ where: { email: args.email } });
+        if (!user) {
+          throw new Error(
+            `Could not find account associated with email: ${args.email}`
+          );
+        } else if (!user.correctPassword(args.password)) {
+          throw new Error(
+            `Incorrect password for account associated with: ${args.email}`
+          );
+        } else {
+          return user;
+        }
+      }
+    },
     addFavorite: {
       type: FavoriteType,
       args: {
-        sceneId: { type: new GraphQLNonNull(GraphQLID) },
-        userId: { type: new GraphQLNonNull(GraphQLID) }
+        sceneId: { type: new GraphQLNonNull(GraphQLID) }
+        // userId: { type: new GraphQLNonNull(GraphQLID) }
       },
-      async resolve(parent, args) {
+      async resolve(parent, args, context) {
+        if (!context.user) throw new Error('Only users can create favorites.');
         const newFavorite = await Favorite.create({
           sceneId: args.sceneId,
-          userId: args.userId
+          // userId: args.userId
+          userId: context.user.id
         });
         return newFavorite;
       }
