@@ -188,18 +188,26 @@ const RootQuery = new GraphQLObjectType({
 const Mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
-    addUser: {
-      type: UserType,
+    signupUser: {
+      type: GraphQLBoolean,
       args: {
         email: { type: new GraphQLNonNull(GraphQLString) },
         password: { type: new GraphQLNonNull(GraphQLString) }
       },
-      async resolve(parent, args) {
-        const newUser = await User.create({
-          email: args.email,
-          password: args.password
-        });
-        return newUser;
+      async resolve(parent, args, request) {
+        try {
+          const user = await User.create({
+            email: args.email,
+            password: args.password
+          });
+          request.login(user, error => (error ? error : user));
+        } catch (error) {
+          if (error.name === 'SequelizeUniqueConstraintError') {
+            throw new Error('Email already associated with existing account!');
+          } else {
+            throw new Error(error.message);
+          }
+        }
       }
     },
     loginUser: {
@@ -220,6 +228,7 @@ const Mutation = new GraphQLObjectType({
           );
         } else {
           request.login(user, error => (error ? error : user));
+          console.log(request.sessionID);
           return true;
         }
       }
@@ -236,16 +245,28 @@ const Mutation = new GraphQLObjectType({
       type: FavoriteType,
       args: {
         sceneId: { type: new GraphQLNonNull(GraphQLID) }
-        // userId: { type: new GraphQLNonNull(GraphQLID) }
       },
       async resolve(parent, args, request) {
         if (!request.user) throw new Error('Only users can create favorites.');
         const newFavorite = await Favorite.create({
           sceneId: args.sceneId,
-          // userId: args.userId
           userId: request.user.id
         });
         return newFavorite;
+      }
+    },
+    removeFavorite: {
+      type: FavoriteType,
+      args: {
+        id: { type: GraphQLID }
+      },
+      async resolve(parent, args) {
+        const removeFavorite = await Favorite.destroy({
+          where: {
+            id: args.id
+          }
+        });
+        return removeFavorite;
       }
     },
     addScene: {
@@ -286,20 +307,6 @@ const Mutation = new GraphQLObjectType({
           }
         });
         return removeUser;
-      }
-    },
-    removeFavorite: {
-      type: FavoriteType,
-      args: {
-        id: { type: GraphQLID }
-      },
-      async resolve(parent, args) {
-        const removeFavorite = await Favorite.destroy({
-          where: {
-            id: args.id
-          }
-        });
-        return removeFavorite;
       }
     },
     removeScene: {

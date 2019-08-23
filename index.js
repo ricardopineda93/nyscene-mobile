@@ -2,12 +2,13 @@
  * @format
  */
 import React from 'react';
-import { AppRegistry } from 'react-native';
+import { AppRegistry, AsyncStorage } from 'react-native';
 import App from './App';
 import { name as appName } from './app.json';
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { ApolloProvider } from '@apollo/react-hooks';
-import ApolloClient from 'apollo-boost';
+import ApolloClient, { InMemoryCache } from 'apollo-boost';
+import { persistCache } from 'apollo-cache-persist';
 
 const theme = {
   ...DefaultTheme,
@@ -19,8 +20,24 @@ const theme = {
   }
 };
 
+const cache = new InMemoryCache();
+
+persistCache({
+  cache,
+  storage: AsyncStorage
+});
+
 const client = new ApolloClient({
-  uri: 'http://192.168.1.10:8080/graphql'
+  uri: 'http://192.168.1.10:8080/graphql',
+  credentials: 'include',
+  request: async operation => {
+    operation.setContext({
+      fetchOptions: {
+        credentials: 'include'
+      }
+    });
+  },
+  cache
 });
 
 const Main = () => {
