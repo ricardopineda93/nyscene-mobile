@@ -8,22 +8,21 @@ const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const PORT = 8080;
 const app = express();
 const sessionStore = new SequelizeStore({ db });
-// const graphqlHTTP = require('express-graphql');
-// const schema = require('./gql/schema');
-const { gqlMiddleware } = require('./middlewares/gqlhttps');
+const graphqlHTTP = require('express-graphql');
+const schema = require('./gql/schema');
 const { passportMiddleware } = require('./middlewares/passport');
 const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 
 //logging middleware:
 app.use(morgan('dev'));
-// app.use('/graphql', graphqlHTTP({ schema, graphiql: true }));
 
 app.use(
   session({
     secret: 'The most robust of secrets...',
     store: sessionStore,
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: true
   })
 );
 
@@ -39,7 +38,7 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-app.use('/graphql', gqlMiddleware);
+app.use('/graphql', graphqlHTTP({ schema, graphiql: true })); // context defaults to 'request'
 
 db.sync().then(() => {
   console.log(cyan('db synced!'));

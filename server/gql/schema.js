@@ -8,7 +8,8 @@ const {
   GraphQLList,
   GraphQLID,
   GraphQLNonNull,
-  GraphQLSchema
+  GraphQLSchema,
+  GraphQLBoolean
 } = require('graphql');
 
 // Scenes Type
@@ -202,12 +203,12 @@ const Mutation = new GraphQLObjectType({
       }
     },
     loginUser: {
-      type: UserType,
+      type: GraphQLBoolean,
       args: {
         email: { type: new GraphQLNonNull(GraphQLString) },
         password: { type: new GraphQLNonNull(GraphQLString) }
       },
-      async resolve(parent, args, context) {
+      async resolve(parent, args, request) {
         const user = await User.findOne({ where: { email: args.email } });
         if (!user) {
           throw new Error(
@@ -218,8 +219,17 @@ const Mutation = new GraphQLObjectType({
             `Incorrect password for account associated with: ${args.email}`
           );
         } else {
-          return user;
+          request.login(user, error => (error ? error : user));
+          return true;
         }
+      }
+    },
+    logoutUser: {
+      type: GraphQLBoolean,
+      async resolve(parent, args, request) {
+        request.logout();
+        request.session.destroy();
+        return true;
       }
     },
     addFavorite: {
@@ -228,12 +238,12 @@ const Mutation = new GraphQLObjectType({
         sceneId: { type: new GraphQLNonNull(GraphQLID) }
         // userId: { type: new GraphQLNonNull(GraphQLID) }
       },
-      async resolve(parent, args, context) {
-        if (!context.user) throw new Error('Only users can create favorites.');
+      async resolve(parent, args, request) {
+        if (!request.user) throw new Error('Only users can create favorites.');
         const newFavorite = await Favorite.create({
           sceneId: args.sceneId,
           // userId: args.userId
-          userId: context.user.id
+          userId: request.user.id
         });
         return newFavorite;
       }
