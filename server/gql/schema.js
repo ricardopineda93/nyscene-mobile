@@ -158,33 +158,23 @@ const RootQuery = new GraphQLObjectType({
       async resolve(parent, args) {
         return await User.findAll();
       }
+    },
+    allSceneFavorited: {
+      type: new GraphQLList(FavoriteType),
+      args: { sceneId: { type: GraphQLID } },
+      async resolve(parent, args) {
+        const favorited = await Favorite.findAll({
+          where: {
+            sceneId: args.sceneId
+          }
+        });
+        return favorited;
+      }
     }
-    // allUserFavorites: {
-    //   type: new GraphQLList(FavoriteType),
-    //   args: { userId: { type: GraphQLID } },
-    //   async resolve(parent, args) {
-    //     const userFavorites = await Favorite.findAll({
-    //       where: {
-    //         userId: args.userId
-    //       },
-    //       include: [{ model: Scene }]
-    //     });
-    //     return userFavorites;
-    //   }
-    // }
-    // omdbInfo: {
-    //   type: OMDBType,
-    //   args: { imdbID: { type: GraphQLID } },
-    //   async resolve(parent, args) {
-    //     const { data } = await axios.get(
-    //       `http://www.omdbapi.com/?apikey=640dfac7&i=${args.imdbID}`
-    //     );
-    //     return data;
-    //   }
-    // }
   }
 });
 
+// Schema mutations:
 const Mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
