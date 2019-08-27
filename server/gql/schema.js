@@ -26,6 +26,7 @@ const SceneType = new GraphQLObjectType({
     neighborhood: { type: GraphQLString },
     imdbLink: { type: GraphQLString },
     imdbId: { type: GraphQLString },
+    // Resolver to fetch film data from OMDB API
     omdbInfo: {
       type: OMDBType,
       async resolve(parent, args) {
@@ -35,6 +36,7 @@ const SceneType = new GraphQLObjectType({
         return data;
       }
     },
+    // Resolver to fetch how many favorites a scene has
     favorites: {
       type: new GraphQLList(FavoriteType),
       async resolve(parent, args) {
@@ -59,6 +61,7 @@ const UserType = new GraphQLObjectType({
     password: { type: GraphQLString },
     salt: { type: GraphQLString },
     googleId: { type: GraphQLString },
+    // Resolver to fetch all of a user's favorites
     favorites: {
       type: new GraphQLList(FavoriteType),
       async resolve(parent, args) {
@@ -81,12 +84,14 @@ const FavoriteType = new GraphQLObjectType({
     id: { type: GraphQLID },
     userId: { type: GraphQLInt },
     sceneId: { type: GraphQLInt },
+    // Resolver to get scene associated with favorite
     scene: {
       type: SceneType,
       async resolve(parent, args) {
         return await Scene.findByPk(parent.sceneId);
       }
     },
+    // Resolver to fetch user associated with favorite
     user: {
       type: UserType,
       async resolve(parent, args) {
@@ -157,18 +162,6 @@ const RootQuery = new GraphQLObjectType({
       type: new GraphQLList(UserType),
       async resolve(parent, args) {
         return await User.findAll();
-      }
-    },
-    allSceneFavorited: {
-      type: new GraphQLList(FavoriteType),
-      args: { sceneId: { type: GraphQLID } },
-      async resolve(parent, args) {
-        const favorited = await Favorite.findAll({
-          where: {
-            sceneId: args.sceneId
-          }
-        });
-        return favorited;
       }
     }
   }
