@@ -1,6 +1,5 @@
 const { cyan, magenta, bgYellow } = require('chalk');
 const express = require('express');
-// const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const session = require('express-session');
 const { User, db } = require('./database/index');
@@ -12,7 +11,6 @@ const graphqlHTTP = require('express-graphql');
 const schema = require('./gql/schema');
 const { passportMiddleware } = require('./middlewares/passport');
 const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
 
 //logging middleware:
 app.use(morgan('dev'));

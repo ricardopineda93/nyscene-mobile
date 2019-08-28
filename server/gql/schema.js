@@ -211,7 +211,6 @@ const Mutation = new GraphQLObjectType({
           );
         } else {
           request.login(user, error => (error ? error : user));
-          console.log(request.sessionID);
           return true;
         }
       }
