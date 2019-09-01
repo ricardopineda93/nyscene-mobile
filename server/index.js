@@ -24,6 +24,7 @@ app.use(
   })
 );
 
+// Is this even being used? Probably not, will need a seperate route to handle
 app.use(passportMiddleware);
 
 passport.serializeUser((user, done) => done(null, user.id));
